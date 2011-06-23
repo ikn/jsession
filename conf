@@ -1,0 +1,2 @@
+init=/etc/jsession/init:~/.jsession/init
+noinit=/etc/jsession/noinit:~/.jsession/noinit

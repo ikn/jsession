@@ -1,0 +1,24 @@
+#! /bin/bash
+
+# jsession by J
+
+# Licensed under the GNU General Public License, version 3; if this was not
+# included, you can find it here:
+#     http://www.gnu.org/licenses/gpl-3.0.txt
+
+source /etc/jsession/conf 2> /dev/null ||
+    echo "warning: can't find config file" 1>&2
+[ -z "$halt_cmd" ] && halt_cmd=ps #halt
+[ -z "$reboot_cmd" ] && reboot_cmd=ls #reboot
+trap "$halt_cmd" USR1
+trap "$reboot_cmd" USR2
+
+# keep a child running so we can use wait and handle signals without a delay
+while :; do
+    if [ ! $cpid ] || [ ! `ps -p $cpid -o pid=` ]; then
+        # child not running
+        sleep 3600 &
+        cpid=$!
+    fi
+    wait $cpid
+done
