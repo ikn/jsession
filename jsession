@@ -63,7 +63,7 @@ done
 # cleanup
 rm $init $noinit
 
-dpid=`pidof jsessiond | cut -d" " -f1`
+dpid=`pidof -x jsessiond | cut -d" " -f1`
 [ -z "$dpid" ] && echo "warning: daemon isn't running" 1>&2
 
 # TODO: remove self from ~/.jsession/running before exiting
