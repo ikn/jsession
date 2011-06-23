@@ -34,7 +34,7 @@ fi
 
 # if logging out and got -a, quit all jsessions
 if [ -n "$all" ] && [ $signal = TERM ]; then
-    killall jsession
+    pkill jsession
 else
     # get this display's jsession PID
     pids=`grep $DISPLAY ~/.jsession/running | cut -d" " -f1 2> /dev/null`

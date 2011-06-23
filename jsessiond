@@ -8,8 +8,8 @@
 
 source /etc/jsession/conf 2> /dev/null ||
     echo "warning: can't find config file" 1>&2
-[ -z "$halt_cmd" ] && halt_cmd=ps #halt
-[ -z "$reboot_cmd" ] && reboot_cmd=ls #reboot
+[ -z "$halt_cmd" ] && halt_cmd=halt
+[ -z "$reboot_cmd" ] && reboot_cmd=reboot
 trap "$halt_cmd" USR1
 trap "$reboot_cmd" USR2
 
