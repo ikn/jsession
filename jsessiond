@@ -13,12 +13,17 @@ source /etc/jsession/conf 2> /dev/null ||
 trap "$halt_cmd" USR1
 trap "$reboot_cmd" USR2
 
-# keep a child running so we can use wait and handle signals without a delay
-while :; do
-    if [ ! $cpid ] || [ ! `ps -p $cpid -o pid=` ]; then
-        # child not running
-        sleep 3600 &
-        cpid=$!
-    fi
-    wait $cpid
-done
+run () {
+    # keep a child running so we can use wait and handle signals without a delay
+    while :; do
+        if [ ! $cpid ] || [ ! `ps -p $cpid -o pid=` ]; then
+            # child not running
+            sleep 3600 &
+            cpid=$!
+        fi
+        wait $cpid
+    done
+}
+
+# fork and exit
+run &
