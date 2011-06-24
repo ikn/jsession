@@ -1,0 +1,91 @@
+#! /bin/bash
+
+# jsession by J
+
+# Licensed under the GNU General Public License, version 3; if this was not
+# included, you can find it here:
+#     http://www.gnu.org/licenses/gpl-3.0.txt
+
+# load config
+default_conf=/etc/jsession/conf
+conf=$1
+if [ -z "$conf" ] || ! source "$conf" 2> /dev/null; then
+    [ -n "$conf" ] &&
+        echo "warning: config file doesn't exist; using defaults" 1>&2
+    conf=$default_conf
+    source $default_conf 2> /dev/null || {
+        echo "error: can't find default config file" 1>&2
+        exit 1
+    }
+fi
+# check we have a display
+if [ -z $DISPLAY ]; then
+    echo "error: can't determine current display" 1>&2
+    exit 2
+fi
+
+# create config dir if needed
+home=~/.jsession
+mkdir -p $home
+# clean up running jsessions list
+> $home/running-temp
+cat $home/running | while read line; do
+    pid=`echo $line | cut -d" " -f1`
+    # copy to new file if still running
+    [ "`ps -p $pid -o comm=`" = jsession ] && echo $line >> $home/running-temp
+done
+rm $home/running
+mv $home/running-temp $home/running
+# die if jsession already running on this display
+# escape any . in $DISPLAY
+running=`grep " ${DISPLAY//\.\\.}$" $home/running` 
+if [ -n "$running" ]; then
+    echo "error: jsession is already running on this display" 1>&2
+    exit 3
+fi
+
+# change to conf's directory so it can use relative paths
+cd `dirname $conf`
+# read lists of stuff to run into temporary files
+copy_files () {
+    files=$1:
+    while [ -n "$files" ]; do
+        # get next file
+        src=`echo $files | cut -d: -f1`
+        files=`echo $files | cut -d: -f2-`
+        # copy
+        cat $src >> $2 2> /dev/null
+        # add newline if none at end of file
+        [ `tail -c1 $2` ] && echo >> $2
+    done
+}
+dest=/tmp/jsession-$$
+copy_files $init $dest-init
+init=$dest-init
+copy_files $noinit $dest-noinit
+noinit=$dest-noinit
+# run stuff
+cd ~
+cat $init | while read cmd; do
+    # skip if a comment or blank
+    [ "`echo $cmd | head -c1`" == "#" ] || [ -z "$cmd" ] && continue
+    # check if in $noinit
+    cat $noinit | while read notcmd; do
+        [ "$cmd" == "$notcmd" ] && continue
+    done
+    # check if command (first word) is on the path
+    if [ `type -P \`echo $cmd | cut -d" " -f1\`` ]; then
+        # run it
+        (eval $cmd &) || echo "warning: failed to run command: $cmd" 1>&2
+    else
+        echo "warning: command not found: $cmd" 1>&2
+    fi
+done
+# cleanup
+rm $init $noinit
+
+# write PID/display to file
+echo $$ $DISPLAY >> $home/running
+
+# run session
+exec jsession

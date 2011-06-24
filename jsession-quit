@@ -23,13 +23,13 @@ for arg in $@; do
         ;;
     *)
         echo "error: unknown option '$arg'" 1>&2
-        exit 2
+        exit 1
         ;;
     esac
 done
 if [ -z $signal ]; then
     echo "error: expected an argument" 1>&2
-    exit 2
+    exit 1
 fi
 
 # if logging out and got -a, quit all jsessions
@@ -41,22 +41,18 @@ else
     numpids=`echo $pids | wc -w`
     if [ $numpids -eq 0 ]; then
         echo "error: couldn't determine the current jsession" 1>&2
-        exit 1
+        exit 2
     fi
     # send signal to first PID that corresponds to a jsession, if any
     for pid in $pids; do
-        echo $pid
         name=`ps -p $pid -o comm= 2> /dev/null`
         if [ "$name" = jsession ]; then
             # send signal
             kill -$signal $pid
             exit 0
         fi
-        numpids=($numpids - 1)
-        if [ $numpids -eq 0 ]; then
-            # no more possible PIDs to check: didn't find anything
-            echo "error: couldn't determine the current jsession" 1>&2
-            exit 1
-        fi
     done
+    # didn't find anything
+    echo "error: couldn't determine the current jsession" 1>&2
+    exit 2
 fi
