@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <unistd.h>
 #include <string.h>
 #include <dbus/dbus.h>
 
@@ -30,19 +31,23 @@ DBusHandlerResult handler (DBusConnection *c, DBusMessage *m, void *data) {
 }
 
 int main () {
+    // fork off and die
+    pid_t pid = fork();
+    if (pid == -1) exit(1);
+    if (pid > 0) exit(0);
     // connect to bus
     DBusError e;
     dbus_error_init(&e);
     DBusConnection *c = dbus_bus_get(DBUS_BUS_SESSION, &e);
     if (c == NULL) {
         fprintf(stderr, "error: couldn't connect to a bus\n");
-        exit(1);
+        exit(2);
     }
     // ask for a 'well-known name'
     if (dbus_bus_request_name(c, "prog.jsession", 0, &e) !=
         DBUS_REQUEST_NAME_REPLY_PRIMARY_OWNER) {
         fprintf(stderr, "error: couldn't register name with bus\n");
-        exit(1);
+        exit(2);
     }
     // register a handler for an object path
     struct DBusObjectPathVTable vtable;
