@@ -6,19 +6,16 @@
 # included, you can find it here:
 #     http://www.gnu.org/licenses/gpl-3.0.txt
 
-# dbus-send --session --type=method_call --print-reply --dest=prog.jsession /prog/jsession prog.jsession.cmd int16:$code
-
 # handle arguments
 for arg in $@; do
     case $arg in
-    logout)
-        signal=TERM
-        ;;
-    halt)
-        signal=USR1
-        ;;
-    reboot)
-        signal=USR2
+    logout | halt | reboot | suspend)
+        if [ -n "$got_arg" ]; then
+            echo "error: got more than one command" 1>&2
+            exit 1
+        fi
+        cmd=$arg
+        got_arg=1
         ;;
     -a)
         all=1
@@ -29,32 +26,46 @@ for arg in $@; do
         ;;
     esac
 done
-if [ -z $signal ]; then
+if [ -z "$cmd" ]; then
     echo "error: expected an argument" 1>&2
     exit 1
 fi
 
-# if logging out and got -a, quit all jsessions
-if [ -n "$all" ] && [ $signal = TERM ]; then
-    pkill jsession
-else
-    # get this display's jsession PID
-    pids=`grep $DISPLAY ~/.jsession/running | cut -d" " -f1 2> /dev/null`
-    numpids=`echo $pids | wc -w`
-    if [ $numpids -eq 0 ]; then
+if [ $cmd = logout ]; then
+    # if logging out and got -a, quit all jsessions
+    if [ -n "$all" ]; then
+        pkill jsession
+    else
+        # get this display's jsession PID
+        pids=`grep $DISPLAY ~/.jsession/running | cut -d" " -f1 2> /dev/null`
+        numpids=`echo $pids | wc -w`
+        if [ $numpids -eq 0 ]; then
+            echo "error: couldn't determine the current jsession" 1>&2
+            exit 2
+        fi
+        # send TERM to first PID that corresponds to a jsession, if any
+        for pid in $pids; do
+            name=`ps -p $pid -o comm= 2> /dev/null`
+            if [ "$name" = jsession ]; then
+                # send signal
+                kill $pid
+                exit 0
+            fi
+        done
+        # didn't find anything
         echo "error: couldn't determine the current jsession" 1>&2
         exit 2
     fi
-    # send signal to first PID that corresponds to a jsession, if any
-    for pid in $pids; do
-        name=`ps -p $pid -o comm= 2> /dev/null`
-        if [ "$name" = jsession ]; then
-            # send signal
-            kill -$signal $pid
-            exit 0
-        fi
-    done
-    # didn't find anything
-    echo "error: couldn't determine the current jsession" 1>&2
-    exit 2
+else
+    case $cmd in
+    halt)       code=0 ;;
+    reboot)     code=1 ;;
+    suspend)    code=2 ;;
+    esac
+    if ! dbus-send --session --type=method_call --print-reply \
+                   --dest=prog.jsession /prog/jsession prog.jsession.cmd \
+                   int16:$code 2> /dev/null; then
+        echo "error: couldn't send a message to jsessiond" 1>&2
+        exit 2
+    fi
 fi
