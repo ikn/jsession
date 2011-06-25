@@ -6,6 +6,8 @@
 # included, you can find it here:
 #     http://www.gnu.org/licenses/gpl-3.0.txt
 
+# dbus-send --session --type=method_call --print-reply --dest=prog.jsession /prog/jsession prog.jsession.cmd int16:$code
+
 # handle arguments
 for arg in $@; do
     case $arg in

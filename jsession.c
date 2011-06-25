@@ -9,5 +9,5 @@ void logout (int sig) {
 int main () {
     signal(SIGTERM, logout);
     getchar();
-    exit(EXIT_SUCCESS);
+    return 0
 }
