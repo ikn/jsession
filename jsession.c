@@ -3,7 +3,7 @@
 #include <signal.h>
 
 void logout (int sig) {
-    exit(EXIT_SUCCESS);
+    exit(0);
 }
 
 int main () {

@@ -64,7 +64,7 @@ else
     esac
     if ! dbus-send --session --type=method_call --print-reply \
                    --dest=prog.jsession /prog/jsession prog.jsession.cmd \
-                   int16:$code 2> /dev/null; then
+                   int16:$code &> /dev/null; then
         echo "error: couldn't send a message to jsessiond" 1>&2
         exit 2
     fi

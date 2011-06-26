@@ -20,13 +20,16 @@ DBusHandlerResult handler (DBusConnection *c, DBusMessage *m, void *data) {
         // just don't reply
         return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
     if (code > 2) return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
+    // take action based on received code
+    if (code == 0) code = system("halt");
+    else if (code == 1) code = system("reboot");
+    else if (code == 2) code = system("pm-suspend");
+    if (code != 0)
+        // error
+        return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
     // reply, just so caller knows the message was received
     DBusMessage *reply = dbus_message_new_method_return(m);
     dbus_connection_send(c, reply, NULL);
-    // take action based on received code
-    if (code == 0) system("halt");
-    else if (code == 1) system("reboot");
-    else if (code == 2) system("pm-suspend");
     return DBUS_HANDLER_RESULT_HANDLED;
 }
 
