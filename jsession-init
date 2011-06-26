@@ -45,7 +45,11 @@ if [ -n "$running" ]; then
 fi
 
 # start dbus
-[ -z "$DBUS_SESSION_BUS_ADDRESS" ] && dbus-launch --exit-with-session
+if [ -z "$DBUS_SESSION_BUS_ADDRESS" ]; then
+    eval `dbus-launch --exit-with-session --sh-syntax`
+else
+    export DBUS_SESSION_BUS_ADDRESS
+fi
 # change to conf's directory so it can use relative paths
 cd `dirname $conf`
 # read lists of stuff to run into temporary files
