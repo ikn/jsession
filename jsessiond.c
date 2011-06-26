@@ -41,15 +41,15 @@ int main () {
     // connect to bus
     DBusError e;
     dbus_error_init(&e);
-    DBusConnection *c = dbus_bus_get(DBUS_BUS_SESSION, &e);
+    DBusConnection *c = dbus_bus_get(DBUS_BUS_SYSTEM, &e);
     if (c == NULL) {
-        fprintf(stderr, "error: couldn't connect to a bus\n");
+        fprintf(stderr, "error: couldn't connect to the system bus\n");
         exit(2);
     }
     // ask for a 'well-known name'
     if (dbus_bus_request_name(c, "prog.jsession", 0, &e) !=
         DBUS_REQUEST_NAME_REPLY_PRIMARY_OWNER) {
-        fprintf(stderr, "error: couldn't register name with bus\n");
+        fprintf(stderr, "error: couldn't register name with system bus\n");
         exit(2);
     }
     // register a handler for an object path

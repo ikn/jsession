@@ -4,6 +4,7 @@ all:
 install:
 	mkdir -p $(DESTDIR)/usr/bin $(DESTDIR)/etc/jsession
 	cp jsession-init jsession jsessiond jsession-quit $(DESTDIR)/usr/bin
+	cp jsession.conf /etc/dbus-1/system.d
 	cp conf $(DESTDIR)/etc/jsession/conf
 uninstall:
 	-rm $(DESTDIR)/usr/bin/jsession-init $(DESTDIR)/usr/bin/jsession

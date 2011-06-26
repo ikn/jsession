@@ -62,7 +62,7 @@ else
     reboot)     code=1 ;;
     suspend)    code=2 ;;
     esac
-    if ! dbus-send --session --type=method_call --print-reply \
+    if ! dbus-send --system --type=method_call --print-reply \
                    --dest=prog.jsession /prog/jsession prog.jsession.cmd \
                    int16:$code &> /dev/null; then
         echo "error: couldn't send a message to jsessiond" 1>&2
