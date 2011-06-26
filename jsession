@@ -82,7 +82,7 @@ cat $init | while read cmd; do
     # check if command (first word) is on the path
     if [ `type -P \`echo $cmd | cut -d" " -f1\`` ]; then
         # run it
-        (eval $cmd &) || echo "warning: failed to run command: $cmd" 1>&2
+        ($cmd &) || echo "warning: failed to run command: $cmd" 1>&2
     else
         echo "warning: command not found: $cmd" 1>&2
     fi
