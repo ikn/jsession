@@ -93,5 +93,20 @@ rm $init $noinit
 # write PID/display to file
 echo $$ $DISPLAY >> $home/running
 
-# run session
-exec jsession
+# set up trap
+do_logout () {
+    # child might already have been killed; hide any error
+    kill $cpid 2> /dev/null
+    exit 0
+}
+trap do_logout TERM INT
+
+# keep a child running so we can use wait and handle signals without a delay
+while :; do
+    if [ ! $cpid ] || [ ! `ps -p $cpid -o pid=` ]; then
+        # child not running
+        sleep 3600 &
+        cpid=$!
+    fi
+    wait $cpid
+done 
