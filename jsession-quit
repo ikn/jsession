@@ -37,7 +37,8 @@ if [ $cmd = logout ]; then
         pkill jsession
     else
         # get this display's jsession PID
-        pids=`grep $DISPLAY ~/.jsession/running | cut -d" " -f1 2> /dev/null`
+        disp=`echo $DISPLAY | cut -d"." -f1`
+        pids=`grep $disp ~/.jsession/running | cut -d" " -f1 2> /dev/null`
         numpids=`echo $pids | wc -w`
         if [ $numpids -eq 0 ]; then
             echo "error: couldn't determine the current jsession" 1>&2

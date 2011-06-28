@@ -23,6 +23,7 @@ if [ -z $DISPLAY ]; then
     echo "error: can't determine current display" 1>&2
     exit 2
 fi
+disp=`echo $DISPLAY | cut -d"." -f1`
 
 # create config dir if needed
 home=~/.jsession
@@ -37,8 +38,7 @@ done
 rm $home/running
 mv $home/running-temp $home/running
 # die if jsession already running on this display
-# escape any . in $DISPLAY
-running=`grep " ${DISPLAY//\.\\.}$" $home/running` 
+running=`grep " $disp$" $home/running` 
 if [ -n "$running" ]; then
     echo "error: jsession is already running on this display" 1>&2
     exit 3
@@ -54,6 +54,11 @@ fi
 cd `dirname $conf`
 # read lists of stuff to run into temporary files
 copy_files () {
+    if [ -z "$1" ]; then
+        # no files: create destination and return
+        > $2
+        return
+    fi
     files=$1:
     while [ -n "$files" ]; do
         # get next file
@@ -66,9 +71,9 @@ copy_files () {
     done
 }
 dest=/tmp/jsession-$$
-copy_files $init $dest-init
+copy_files "$init" $dest-init
 init=$dest-init
-copy_files $noinit $dest-noinit
+copy_files "$noinit" $dest-noinit
 noinit=$dest-noinit
 # run stuff
 cd ~
@@ -91,7 +96,7 @@ done
 rm $init $noinit
 
 # write PID/display to file
-echo $$ $DISPLAY >> $home/running
+echo $$ $disp >> $home/running
 
 # set up trap
 do_logout () {
