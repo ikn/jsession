@@ -6,9 +6,27 @@
 # included, you can find it here:
 #     http://www.gnu.org/licenses/gpl-3.0.txt
 
+conf=$1
+if [ "$conf" = "-h" ] || [ "$conf" = "--help" ]; then
+    echo "jsession: a tiny session manager.
+
+Usage:
+
+    jsession [conf]
+
+Run jsession.  conf is a configuration file (Bash source file) defining init
+and noinit as ':'-separated files to read.  Lines in each 'init' are executed
+as commands if they are not in any 'noinit' file.  Duplicate lines will be
+executed as many times as they appear, even across multiple 'init' files.
+
+    jsession -h
+    jsession --help
+
+Display this help."
+    exit 0
+fi
 # load config
 default_conf=/etc/jsession/conf
-conf=$1
 if [ -z "$conf" ] || ! source "$conf" 2> /dev/null; then
     [ -n "$conf" ] &&
         echo "warning: config file doesn't exist; using defaults" 1>&2

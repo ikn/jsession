@@ -20,6 +20,24 @@ for arg in $@; do
     -a)
         all=1
         ;;
+    -h | --help)
+        echo "jsession-quit: quit a running jsession.
+
+Usage:
+
+    jsession-quit [-a] cmd
+
+Run the program.  cmd is one of logout, halt, reboot and suspend.  logout
+accepts the '-a' option to log out all running jsessions (not just the one on
+this display).  The latter three commands require that the jsession daemon be
+running.
+
+    jsession-quit -h
+    jsession-quit --help
+
+Display this help."
+        exit 0
+        ;;
     *)
         echo "error: unknown option '$arg'" 1>&2
         exit 1
