@@ -1,0 +1,38 @@
+jsession session manager 0.2.2 by J.
+
+http://i-know-nothing.co.cc/jsession
+
+    LICENSE
+
+Licensed under the GNU General Public License, version 3; if this was not
+included, you can find it here:
+    http://www.gnu.org/licenses/gpl-3.0.txt
+
+    INSTALLATION
+
+Installation is possible on Unix-like systems with GCC: to install, run 'make'
+then 'make install'; to uninstall, run 'make uninstall'.
+
+It should be necessary to run 'make install' as root.
+
+The following files and folders are installed to the following default
+locations:
+
+jsession -> /usr/bin/jsession
+jsessiond -> /usr/bin/jsessiond
+jsession-quit -> /usr/bin/jsession-quit
+jsession.conf -> /etc/dbus-1/system.d/jsession.conf
+conf -> /etc/jsession/conf
+
+    DEPENDENCIES
+
+Bash: http://www.gnu.org/software/bash
+grep
+DBus: http://www.freedesktop.org/wiki/Software/dbus
+System V init: http://savannah.nongnu.org/projects/sysvinit
+
+    USAGE
+
+See 'jsession --help' and 'jsession-quit --help' for details.  Start the daemon
+(as root) using 'jsessiond', or write an init script (find one for Arch Linux
+at the project homepage).
