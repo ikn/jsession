@@ -53,7 +53,7 @@ if [ $cmd = logout ]; then
     # if logging out and got -a, quit all jsessions
     if [ -n "$all" ]; then
         pkill jsession
-    else
+    elif [ -n "$DISPLAY" ];
         # get this display's jsession PID
         disp=`echo $DISPLAY | cut -d"." -f1`
         pids=`grep $disp ~/.jsession/running | cut -d" " -f1 2> /dev/null`
@@ -73,6 +73,9 @@ if [ $cmd = logout ]; then
         done
         # didn't find anything
         echo "error: couldn't determine the current jsession" 1>&2
+        exit 2
+    else
+        echo "error: couldn't determine the current display" 1>&2
         exit 2
     fi
 else
