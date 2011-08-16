@@ -70,7 +70,7 @@ else
 fi
 # run startup scripts
 if ! dbus-send --system --type=method_call --print-reply --dest=prog.jsession \
-               /prog/jsession prog.jsession.cmd int16:$code &> /dev/null; then
+               /prog/jsession prog.jsession.cmd int16:3 &> /dev/null; then
     echo "error: couldn't run root startup scripts (is daemon running?)" 1>&2
     exit 4
 fi
