@@ -13,17 +13,18 @@ DBusHandlerResult handler (DBusConnection *c, DBusMessage *m, void *data) {
     // check the received data is valid
     DBusError e;
     dbus_error_init(&e);
-    unsigned short code = -1;
+    short code = -1;
     if (dbus_message_get_args(m, &e, DBUS_TYPE_INT16, &code, DBUS_TYPE_INVALID)
         == FALSE)
         // no idea what went wrong; this should match the message signature
         // just don't reply
         return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
-    if (code > 2) return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
+    if (code < 0 || code > 3) return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
     // take action based on received code
     if (code == 0) code = system("halt");
     else if (code == 1) code = system("reboot");
     else if (code == 2) code = system("pm-suspend");
+    else code = system("run-parts /etc/jsession/startup");
     if (code != 0)
         // error
         return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
