@@ -1,5 +1,5 @@
 all:
-	gcc -Wall jsessiond.c `pkg-config --cflags --libs dbus-1` -ojsessiond
+	gcc $(CFLAGS) -Wall jsessiond.c `pkg-config --cflags --libs dbus-1` -ojsessiond
 install:
 	mkdir -p $(DESTDIR)/usr/bin $(DESTDIR)/etc/dbus-1/system.d
 	mkdir -p $(DESTDIR)/etc/jsession/startup
