@@ -37,7 +37,7 @@ if [ -z "$conf" ] || ! source "$conf" 2> /dev/null; then
     }
 fi
 # check we have a display
-if [ -z $DISPLAY ]; then
+if [ -z "$DISPLAY" ]; then
     echo "error: can't determine current display" 1>&2
     exit 2
 fi
@@ -71,8 +71,7 @@ fi
 # run startup scripts
 if ! dbus-send --system --type=method_call --print-reply --dest=prog.jsession \
                /prog/jsession prog.jsession.cmd int16:3 &> /dev/null; then
-    echo "error: couldn't run root startup scripts (is daemon running?)" 1>&2
-    exit 4
+    echo "warning: couldn't run root startup scripts (is daemon running?)" 1>&2
 fi
 # change to conf's directory so it can use relative paths
 cd `dirname $conf`
