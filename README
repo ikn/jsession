@@ -1,4 +1,4 @@
-jsession session manager 0.2.2 by J.
+jsession session manager 0.2.3 by J.
 
 http://i-know-nothing.co.cc/jsession
 
@@ -21,8 +21,9 @@ locations:
 jsession -> /usr/bin/jsession
 jsessiond -> /usr/bin/jsessiond
 jsession-quit -> /usr/bin/jsession-quit
-jsession.conf -> /etc/dbus-1/system.d/jsession.conf
+dbus.conf -> /etc/dbus-1/system.d/jsession.conf
 conf -> /etc/jsession/conf
+bash_completion -> /etc/bash_completion.d/jsession_quit
 
     DEPENDENCIES
 
