@@ -3,7 +3,7 @@ all:
 		-ojsessiond
 install:
 	mkdir -p "$(DESTDIR)/usr/bin" "$(DESTDIR)/etc/dbus-1/system.d" \
-		"$(DESTDIR)/etc/jsession/startup" "$(DESTDIR)/etc/bash_completion-d"
+		"$(DESTDIR)/etc/jsession/startup" "$(DESTDIR)/etc/bash_completion.d"
 	cp jsession jsessiond jsession-quit "$(DESTDIR)/usr/bin"
 	cp dbus.conf "$(DESTDIR)/etc/dbus-1/system.d/jsession.conf"
 	cp conf "$(DESTDIR)/etc/jsession/conf"
