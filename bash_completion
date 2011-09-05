@@ -1,0 +1,33 @@
+# jsession Bash completion by J
+
+# Licensed under the GNU General Public License, version 3; if this was not
+# included, you can find it here:
+#     http://www.gnu.org/licenses/gpl-3.0.txt
+
+_jsession_quit () {
+    local cur="$2"
+    local out
+    # get the index of this argument, ignoring options
+    # (count options)
+    local i=0
+    local w
+    for w in ${COMP_WORDS[@]}; do
+        [[ $w == -* ]] && i=$[i+1]
+    done
+    # (then subtract from current word)
+    i=$[$COMP_CWORD-$i]
+    # complete option
+    if [ "`echo $cur | head -c1`" = - ]; then
+        local out="`compgen -W "-a -h" -- "$cur"`"
+        local IFS=$'\n'
+        COMPREPLY=($out)
+    # complete first non-option word
+    elif [ $i -eq 1 ]; then
+        out="`compgen -W "logout halt reboot suspend" -- "$cur"`"
+        local IFS=$'\n'
+        COMPREPLY=($out)
+    fi
+
+}
+
+complete -o filenames -F _jsession_quit jsession-quit
