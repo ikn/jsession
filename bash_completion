@@ -18,7 +18,7 @@ _jsession_quit () {
     i=$[$COMP_CWORD-$i]
     # complete option
     if [ "`echo $cur | head -c1`" = - ]; then
-        local out="`compgen -W "-a -h" -- "$cur"`"
+        local out="`compgen -W "-a -h --help" -- "$cur"`"
         local IFS=$'\n'
         COMPREPLY=($out)
     # complete first non-option word

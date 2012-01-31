@@ -32,6 +32,11 @@ grep
 DBus: http://www.freedesktop.org/wiki/Software/dbus
 System V init: http://savannah.nongnu.org/projects/sysvinit
 
+To be able to run executables as root on login:
+
+run-parts (part of debianutils):
+    http://packages.qa.debian.org/d/debianutils.html
+
     USAGE
 
 See 'jsession --help' and 'jsession-quit --help' for details.  Start the daemon
