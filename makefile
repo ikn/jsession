@@ -11,4 +11,6 @@ install:
 uninstall:
 	-rm -r "$(DESTDIR)/usr/bin/jsession" "$(DESTDIR)/usr/bin/jsessiond" \
 		"$(DESTDIR)/usr/bin/jsession-quit" \
-		"$(DESTDIR)/etc/dbus-1/system.d/jsession.conf" $(DESTDIR)/etc/jsession
+		"$(DESTDIR)/etc/dbus-1/system.d/jsession.conf" \
+		"$(DESTDIR)/etc/jsession" \
+		"$(DESTDIR)/etc/bash_completion.d/jsession_quit"

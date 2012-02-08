@@ -41,6 +41,7 @@ DBusHandlerResult handler (DBusConnection *c, DBusMessage *m, void *data) {
     // reply, just so caller knows the message was received
     DBusMessage *reply = dbus_message_new_method_return(m);
     dbus_connection_send(c, reply, NULL);
+    dbus_connection_flush(c);
     return DBUS_HANDLER_RESULT_HANDLED;
 }
 
