@@ -46,10 +46,6 @@ DBusHandlerResult handler (DBusConnection *c, DBusMessage *m, void *data) {
 }
 
 int main () {
-    // fork off and die
-    pid_t pid = fork();
-    if (pid == -1) exit(1);
-    if (pid > 0) exit(0);
     // connect to bus
     DBusError e;
     dbus_error_init(&e);
@@ -64,6 +60,10 @@ int main () {
         fprintf(stderr, "error: couldn't register name with system bus\n");
         exit(2);
     }
+    // everything's fine: fork off and die
+    pid_t pid = fork();
+    if (pid == -1) exit(1);
+    if (pid > 0) exit(0);
     // register a handler for an object path
     struct DBusObjectPathVTable vtable;
     DBusObjectPathMessageFunction mf = &handler;
