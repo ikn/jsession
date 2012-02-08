@@ -2,7 +2,7 @@ PROG := jsessiond
 SRCS := $(wildcard *.c)
 CFLAGS += -Wall
 CPPFLAGS += `pkg-config --cflags dbus-1`
-LDFLAGS += `pkg-config --libs dbus-1`
+LDFLAGS += -Wl,--no-as-needed `pkg-config --libs dbus-1`
 
 .PHONY: all clean distclean install uninstall
 
