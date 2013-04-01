@@ -27,10 +27,9 @@ Usage:
 
     jsession-quit [-a] cmd
 
-Run the program.  cmd is one of logout, halt, reboot and suspend.  logout
-accepts the '-a' option to log out all running jsessions (not just the one on
-this display).  The latter three commands require that the jsession daemon be
-running.
+cmd is one of logout, halt, reboot and suspend.  logout accepts the -a option
+to log out all running jsessions (not just the one on this display).  The
+latter three commands require that the jsession daemon be running.
 
     jsession-quit -h
     jsession-quit --help

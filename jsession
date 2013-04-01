@@ -14,10 +14,11 @@ Usage:
 
     jsession [conf]
 
-Run jsession.  conf is a configuration file (Bash source file) defining init
-and noinit as ':'-separated files to read.  Lines in each 'init' are executed
-as commands if they are not in any 'noinit' file.  Duplicate lines will be
-executed as many times as they appear, even across multiple 'init' files.
+conf is a configuration file (Bash source file) defining init and noinit as
+\`:'-separated files to read; it defaults to /etc/jsession/conf.  Lines in each
+\`init' are executed as commands if they are not in any \`noinit' file.
+Duplicate lines will be executed as many times as they appear, even across
+multiple \`init' files.
 
 On login, all executable files in /etc/jsession/startup are executed as root by
 the jsession daemon, if running (using run-parts).
