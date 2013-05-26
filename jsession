@@ -9,7 +9,9 @@
 # shell="$(grep "^$LOGNAME:" /etc/passwd)"
 # shell="${shell##*/}"
 # zsh: ~/.zprofile
+# csh, tcsh: ~/.login
 # else: ~/.profile
+# https://en.wikipedia.org/wiki/Template:Unix_shells
 
 startup_code=4
 

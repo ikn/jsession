@@ -12,7 +12,7 @@ jsessiond_do () {
     reply="`dbus-send --system --type=method_call --print-reply=literal \
             --dest=prog.jsession /prog/jsession prog.jsession.cmd \
             int16:$1 2>&1`"
-    if [ "$?" -ne 0 ]; then
+    if [ $? -ne 0 ]; then
         if [ "${reply##*: }" = "couldn't run command" ]; then
             echo "error: the command run by jsessiond failed" 1>&2
             return 3
@@ -76,7 +76,7 @@ if [ -z "$cmd" ]; then
     exit 1
 fi
 
-if [ $cmd = logout ]; then
+if [ "$cmd" = logout ]; then
     # if logging out and got -a, quit all jsessions
     if [ -n "$all" ]; then
         pkill jsession$
@@ -106,10 +106,14 @@ if [ $cmd = logout ]; then
         exit 2
     fi
 else
-    case $cmd in
-    halt)       code=1 ;;
-    reboot)     code=2 ;;
-    suspend)    code=3 ;;
-    esac
-    jsessiond_do $code || exit $?
+    if [ "$cmd" = halt ]; then
+        code=1
+        systemctl poweroff
+    elif [ "$cmd" = reboot ]; then
+        code=2
+        systemctl reboot
+    else # $cmd is suspend
+        code=3
+        systemctl suspend
+    fi || jsessiond_do $code || exit $?
 fi
