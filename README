@@ -28,9 +28,12 @@ bash_completion -> /etc/bash_completion.d/jsession_quit
     DEPENDENCIES
 
 Bash: http://www.gnu.org/software/bash
-grep
+GNU grep or equivalent
 DBus: http://www.freedesktop.org/wiki/Software/dbus
-System V init: http://savannah.nongnu.org/projects/sysvinit
+System V init (or compatible): http://savannah.nongnu.org/projects/sysvinit
+systemd: http://freedesktop.org/wiki/Software/systemd/
+    [for suspend support, not required if using systemd]
+pm-utils: http://pm-utils.freedesktop.org/wiki/
 
 To be able to run executables as root on login:
 

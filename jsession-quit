@@ -6,6 +6,25 @@
 # included, you can find it here:
 #     http://www.gnu.org/licenses/gpl-3.0.txt
 
+# systemctl suspend
+
+jsessiond_do () {
+    reply="`dbus-send --system --type=method_call --print-reply=literal \
+            --dest=prog.jsession /prog/jsession prog.jsession.cmd \
+            int16:$1 2>&1`"
+    if [ "$?" -ne 0 ]; then
+        if [ "${reply##*: }" = "couldn't run command" ]; then
+            echo "error: the command run by jsessiond failed" 1>&2
+            return 3
+        else
+            echo "error: couldn't send a message to jsessiond" 1>&2
+            return 2
+        fi
+    else
+        return 0
+    fi
+}
+
 # handle arguments
 for arg in $@; do
     case $arg in
@@ -30,7 +49,15 @@ Usage:
 cmd is one of 'logout', 'halt', 'reboot' and 'suspend'.  'logout' accepts the
 -a option to log out all running jsessions for the current user (not just the
 one on this display).  The latter three commands require that the jsession
-daemon be running.
+daemon be running, if not using systemd.
+
+Returns:
+
+0 on success
+1 if the arguments given are invalid
+2 if logging out and the session couldn't be determined, or if not running
+  systemd and a message couldn't be sent to the jsession daemon
+3 if a command run by the jsession daemon failed
 
     jsession-quit -h
     jsession-quit --help
@@ -80,14 +107,9 @@ if [ $cmd = logout ]; then
     fi
 else
     case $cmd in
-    halt)       code=0 ;;
-    reboot)     code=1 ;;
-    suspend)    code=2 ;;
+    halt)       code=1 ;;
+    reboot)     code=2 ;;
+    suspend)    code=3 ;;
     esac
-    if ! dbus-send --system --type=method_call --print-reply \
-                   --dest=prog.jsession /prog/jsession prog.jsession.cmd \
-                   int16:$code &> /dev/null; then
-        echo "error: couldn't send a message to jsessiond" 1>&2
-        exit 2
-    fi
+    jsessiond_do $code || exit $?
 fi

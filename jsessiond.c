@@ -14,34 +14,46 @@ included, you can find it here:
 #include <string.h>
 #include <dbus/dbus.h>
 
+DBusHandlerResult reply_err (DBusConnection *c, DBusMessage *m,
+                             char* err_msg) {
+    DBusMessage* err = dbus_message_new_error(m, DBUS_ERROR_FAILED, err_msg);
+    if (err != NULL) {
+        dbus_connection_send(c, err, NULL);
+        dbus_message_unref(err);
+    }
+    return DBUS_HANDLER_RESULT_HANDLED;
+}
+
 DBusHandlerResult handler (DBusConnection *c, DBusMessage *m, void *data) {
     // check the message is as expected: one int16, method call to member 'cmd'
     if (strcmp(dbus_message_get_member(m), "cmd") != 0 ||
         dbus_message_get_type(m) != DBUS_MESSAGE_TYPE_METHOD_CALL ||
         strcmp(dbus_message_get_signature(m), DBUS_TYPE_INT16_AS_STRING) != 0)
-        return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
+        return reply_err(c, m, "invalid message type");
     // check the received data is valid
     DBusError e;
     dbus_error_init(&e);
-    short code = -1;
+    short code = 0;
     if (dbus_message_get_args(m, &e, DBUS_TYPE_INT16, &code, DBUS_TYPE_INVALID)
         == FALSE)
         // no idea what went wrong; this should match the message signature
         // just don't reply
-        return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
-    if (code < 0 || code > 3) return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
+        return reply_err(c, m, "invalid message type");
+    if (code < 1 || code > 4) return reply_err(c, m, "invalid message data");
     // take action based on received code
-    if (code == 0) code = system("halt");
-    else if (code == 1) code = system("reboot");
-    else if (code == 2) code = system("pm-suspend");
-    else code = system("run-parts /etc/jsession/startup");
+    if (code == 1) code = system("halt");
+    else if (code == 2) code = system("reboot");
+    else if (code == 3) code = system("pm-suspend");
+    else code = system("run-parts /etc/jsession/startup"); // code == 4
     if (code != 0)
         // error
-        return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
+        return reply_err(c, m, "couldn't run command");
     // reply, just so caller knows the message was received
     DBusMessage *reply = dbus_message_new_method_return(m);
-    dbus_connection_send(c, reply, NULL);
-    dbus_connection_flush(c);
+    if (reply != NULL) {
+        dbus_connection_send(c, reply, NULL);
+        dbus_message_unref(reply);
+    }
     return DBUS_HANDLER_RESULT_HANDLED;
 }
 
@@ -68,7 +80,11 @@ int main () {
     struct DBusObjectPathVTable vtable;
     DBusObjectPathMessageFunction mf = &handler;
     vtable.message_function = mf;
-    dbus_connection_register_object_path(c, "/prog/jsession", &vtable, NULL);
+    if (dbus_connection_register_object_path(c, "/prog/jsession", &vtable,
+        NULL) == FALSE) {
+        fprintf(stderr, "error: couldn\'t register handler with system bus\n");
+        exit(2);
+    }
     // main loop
     while (dbus_connection_read_write_dispatch(c, -1));
     return 0;
