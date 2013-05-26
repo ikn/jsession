@@ -1,4 +1,4 @@
-PROG := jsession jsessiond jsession-quit
+PROG := jsessiond
 CFLAGS += -Wall
 CPPFLAGS += `pkg-config --cflags dbus-1`
 LDLIBS += `pkg-config --libs dbus-1`
@@ -22,7 +22,8 @@ install:
 	mkdir -p "$(DESTDIR)$(bindir)" "$(DESTDIR)/etc/dbus-1/system.d" \
 		"$(DESTDIR)/etc/jsession/startup" \
 		"$(DESTDIR)/etc/bash_completion.d"
-	$(INSTALL_PROGRAM) "$(PROG)" "$(DESTDIR)$(bindir)"
+	$(INSTALL_PROGRAM) jsession jsessiond jsession-quit \
+		"$(DESTDIR)$(bindir)"
 	$(INSTALL_DATA) dbus.conf \
 		"$(DESTDIR)/etc/dbus-1/system.d/jsession.conf"
 	$(INSTALL_DATA) conf "$(DESTDIR)/etc/jsession/conf"
