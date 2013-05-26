@@ -1,4 +1,4 @@
-jsession session manager 0.2.4-next by Joseph Lansdowne.
+jsession session manager 0.2.5 by Joseph Lansdowne.
 
 http://ikn.org.uk/jsession
 
@@ -31,11 +31,12 @@ Bash: http://www.gnu.org/software/bash
 GNU grep or equivalent
 DBus: http://www.freedesktop.org/wiki/Software/dbus
 System V init (or compatible): http://savannah.nongnu.org/projects/sysvinit
-systemd: http://freedesktop.org/wiki/Software/systemd/
-    [for suspend support, not required if using systemd]
+
+    For suspend support (not required if using systemd):
+
 pm-utils: http://pm-utils.freedesktop.org/wiki/
 
-To be able to run executables as root on login:
+    To be able to run executables as root on login:
 
 run-parts (part of debianutils):
     http://packages.qa.debian.org/d/debianutils.html

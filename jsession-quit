@@ -6,8 +6,6 @@
 # included, you can find it here:
 #     http://www.gnu.org/licenses/gpl-3.0.txt
 
-# systemctl suspend
-
 jsessiond_do () {
     reply="`dbus-send --system --type=method_call --print-reply=literal \
             --dest=prog.jsession /prog/jsession prog.jsession.cmd \
@@ -107,13 +105,13 @@ if [ "$cmd" = logout ]; then
     fi
 else
     if [ "$cmd" = halt ]; then
-        code=1
         systemctl poweroff
+        code=1
     elif [ "$cmd" = reboot ]; then
-        code=2
         systemctl reboot
+        code=2
     else # $cmd is suspend
-        code=3
         systemctl suspend
+        code=3
     fi || jsessiond_do $code || exit $?
 fi
