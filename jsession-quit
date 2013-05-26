@@ -1,6 +1,6 @@
 #! /bin/bash
 
-# jsession-quit by J
+# jsession-quit by Joseph Lansdowne
 
 # Licensed under the GNU General Public License, version 3; if this was not
 # included, you can find it here:
@@ -27,9 +27,10 @@ Usage:
 
     jsession-quit [-a] cmd
 
-cmd is one of logout, halt, reboot and suspend.  logout accepts the -a option
-to log out all running jsessions (not just the one on this display).  The
-latter three commands require that the jsession daemon be running.
+cmd is one of 'logout', 'halt', 'reboot' and 'suspend'.  'logout' accepts the
+-a option to log out all running jsessions for the current user (not just the
+one on this display).  The latter three commands require that the jsession
+daemon be running.
 
     jsession-quit -h
     jsession-quit --help

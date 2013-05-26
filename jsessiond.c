@@ -1,6 +1,6 @@
 /*
 
-jsession daemon by J
+jsession daemon by Joseph Lansdowne
 
 Licensed under the GNU General Public License, version 3; if this was not
 included, you can find it here:

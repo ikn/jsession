@@ -1,6 +1,6 @@
 #! /bin/bash
 
-# jsession by J
+# jsession by Joseph Lansdowne
 
 # Licensed under the GNU General Public License, version 3; if this was not
 # included, you can find it here:
@@ -15,10 +15,10 @@ Usage:
     jsession [conf]
 
 conf is a configuration file (Bash source file) defining init and noinit as
-\`:'-separated files to read; it defaults to /etc/jsession/conf.  Lines in each
-\`init' are executed as commands if they are not in any \`noinit' file.
+':'-separated files to read; it defaults to /etc/jsession/conf.  Lines in each
+'init' file are executed as commands if they are not in any 'noinit' file.
 Duplicate lines will be executed as many times as they appear, even across
-multiple \`init' files.
+multiple 'init' files.
 
 On login, all executable files in /etc/jsession/startup are executed as root by
 the jsession daemon, if running (using run-parts).
