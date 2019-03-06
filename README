@@ -1,4 +1,4 @@
-jsession session manager 0.2.5 by Joseph Lansdowne.
+jsession session manager 0.2.5-next by Joseph Lansdowne.
 
 http://ikn.org.uk/jsession
 
@@ -45,4 +45,4 @@ run-parts (part of debianutils):
 
 See `jsession --help' and `jsession-quit --help' for details.  Start the daemon
 (as root) using `jsessiond', or write an init script (find a systemd service
-file for Arch Linux at the project homepage).
+file at the project homepage).

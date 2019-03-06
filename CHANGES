@@ -1,0 +1,2 @@
+0.2.5-next:
+ * fix running commands which read from standard input

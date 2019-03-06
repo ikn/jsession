@@ -6,6 +6,11 @@
 # included, you can find it here:
 #     http://www.gnu.org/licenses/gpl-3.0.txt
 
+# TODO: fix commands with spaces
+# TODO: remove noinit (doesn't work, or make sense)
+# TODO: use -r in `read` calls
+# TODO: include systemd file in repo
+
 startup_code=4
 
 conf=$1
@@ -146,7 +151,7 @@ cat "$init" | while read cmd; do
     # check if command (first word) is on the path
     if type -P "$(echo "$cmd" | cut -d" " -f1)" &> /dev/null; then
         # run it (can't check if it died because it's backgrounded)
-        $cmd &
+        echo -n | $cmd &
     else
         echo "warning: command not found: $cmd" 1>&2
     fi
