@@ -8,7 +8,6 @@
 
 # TODO: fix commands with spaces
 # TODO: remove noinit (doesn't work, or make sense)
-# TODO: use -r in `read` calls
 # TODO: include systemd file in repo
 
 startup_code=4
@@ -60,7 +59,7 @@ home=~/.jsession
 mkdir -p "$home"
 # clean up running jsessions list
 > "$home/running-temp"
-cat "$home/running" | while read line; do
+cat "$home/running" | while read -r line; do
     pid=`echo $line | cut -d" " -f1`
     # copy to new file if still running
     [ "$(ps -p "$pid" -o comm=)" = jsession ] &&
@@ -136,12 +135,12 @@ copy_files "$noinit" "$dest-noinit"
 noinit="$dest-noinit"
 # run stuff
 cd ~
-cat "$init" | while read cmd; do
+cat "$init" | while read -r cmd; do
     # skip if a comment or blank
     [ -z "$cmd" ] || [ "${cmd:0:1}" = "#" ] && continue
     # check if in $noinit
     skip=n
-    cat "$noinit" | while read notcmd; do
+    cat "$noinit" | while read -r notcmd; do
         if [ "$cmd" = "$notcmd" ]; then
             skip=y
             break

@@ -8,6 +8,8 @@ included, you can find it here:
 
 */
 
+// TODO: poweroff instead of halt
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
