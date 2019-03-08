@@ -6,9 +6,8 @@
 # included, you can find it here:
 #     http://www.gnu.org/licenses/gpl-3.0.txt
 
-# TODO: fix commands with spaces
 # TODO: remove noinit (doesn't work, or make sense)
-# TODO: include systemd file in repo
+# TODO: install systemd file on make, using correct path in ExecStart; remove it from pkgbuild and website (file + link)
 
 startup_code=4
 
@@ -25,6 +24,9 @@ conf is a configuration file (Bash source file) defining init and noinit as
 'init' file are executed as commands if they are not in any 'noinit' file.
 Duplicate lines will be executed as many times as they appear, even across
 multiple 'init' files.
+
+Commands are executed using the shell specified in the \`SHELL' environment
+variable, as \`SHELL -c COMMAND'.
 
 On login, the file ~/.profile is sourced, and all executable files in
 /etc/jsession/startup are executed as root by the jsession daemon, if running
@@ -53,6 +55,10 @@ if [ -z "$DISPLAY" ]; then
     exit 2
 fi
 disp=`echo $DISPLAY | cut -d"." -f1`
+if [ -z "$SHELL" ]; then
+    echo "error: SHELL environment variable is not set" 1>&2
+    exit 2
+fi
 
 # create config dir if needed
 home=~/.jsession
@@ -147,13 +153,8 @@ cat "$init" | while read -r cmd; do
         fi
     done
     [ "$skip" = y ] && continue
-    # check if command (first word) is on the path
-    if type -P "$(echo "$cmd" | cut -d" " -f1)" &> /dev/null; then
-        # run it (can't check if it died because it's backgrounded)
-        echo -n | $cmd &
-    else
-        echo "warning: command not found: $cmd" 1>&2
-    fi
+    # run it (can't check if it died because it's backgrounded)
+    "$SHELL" -c "$cmd" & < /dev/null
 done
 # cleanup
 rm "$init" "$noinit"
@@ -177,4 +178,4 @@ while true; do
         cpid=$!
     fi
     wait $cpid
-done 
+done

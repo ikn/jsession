@@ -1,2 +1,3 @@
 0.2.5-next:
+ * commands are now executed using a shell
  * fix running commands which read from standard input
