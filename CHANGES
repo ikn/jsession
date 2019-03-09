@@ -1,3 +1,4 @@
 0.2.5-next:
  * commands are now executed using a shell
  * fix running commands which read from standard input
+ * remove the `noinit' setting (it didn't work anyway, or make much sense)

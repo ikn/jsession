@@ -6,27 +6,26 @@
 # included, you can find it here:
 #     http://www.gnu.org/licenses/gpl-3.0.txt
 
-# TODO: remove noinit (doesn't work, or make sense)
 # TODO: install systemd file on make, using correct path in ExecStart; remove it from pkgbuild and website (file + link)
 
 startup_code=4
 
 conf=$1
 if [ "$conf" = "-h" ] || [ "$conf" = "--help" ]; then
-    echo "jsession: a tiny session manager.
+    echo "jsession: start an X session.
 
 Usage:
 
-    jsession [conf]
+    jsession [CONF]
 
-conf is a configuration file (Bash source file) defining init and noinit as
-':'-separated files to read; it defaults to /etc/jsession/conf.  Lines in each
-'init' file are executed as commands if they are not in any 'noinit' file.
+CONF is a configuration file (Bash source file), defaulting to
+/etc/jsession/conf.  In it, define \`init' as a ':'-separated set of files to
+read.  File paths can be relative to ~/.jsession.
+
+Lines in each 'init' file are executed as commands, using the shell
+specified in the SHELL environment variable (as \`SHELL -c COMMAND').
 Duplicate lines will be executed as many times as they appear, even across
 multiple 'init' files.
-
-Commands are executed using the shell specified in the \`SHELL' environment
-variable, as \`SHELL -c COMMAND'.
 
 On login, the file ~/.profile is sourced, and all executable files in
 /etc/jsession/startup are executed as root by the jsession daemon, if running
@@ -55,6 +54,7 @@ if [ -z "$DISPLAY" ]; then
     exit 2
 fi
 disp=`echo $DISPLAY | cut -d"." -f1`
+# check we can run commands
 if [ -z "$SHELL" ]; then
     echo "error: SHELL environment variable is not set" 1>&2
     exit 2
@@ -101,18 +101,6 @@ fi
 # change to conf's directory so it can use relative paths
 cd "$(dirname "$conf")"
 # source login shell initialisation file
-# TODO: is there a way to get the login shell to source it, then inherit its
-#       environment?
-# shell="$(grep "^$LOGNAME:" /etc/passwd)"
-# shell="${shell##*/}"
-# if [ "$shell" = zsh ]; then
-#     source ~/.zprofile
-# elif [ "$shell" = csh ] || [ "$shell" = tcsh ]; then
-#     source ~/.login
-# else # bash, sh, ksh, dash
-#     echo .profile
-#     source ~/.profile
-# fi
 source ~/.profile
 
 # read lists of stuff to run into temporary files
@@ -137,27 +125,16 @@ copy_files () {
 dest="/tmp/jsession-$$"
 copy_files "$init" "$dest-init"
 init="$dest-init"
-copy_files "$noinit" "$dest-noinit"
-noinit="$dest-noinit"
 # run stuff
 cd ~
 cat "$init" | while read -r cmd; do
     # skip if a comment or blank
     [ -z "$cmd" ] || [ "${cmd:0:1}" = "#" ] && continue
-    # check if in $noinit
-    skip=n
-    cat "$noinit" | while read -r notcmd; do
-        if [ "$cmd" = "$notcmd" ]; then
-            skip=y
-            break
-        fi
-    done
-    [ "$skip" = y ] && continue
     # run it (can't check if it died because it's backgrounded)
     "$SHELL" -c "$cmd" & < /dev/null
 done
 # cleanup
-rm "$init" "$noinit"
+rm "$init"
 
 # write PID/display to file
 echo $$ $disp >> "$home/running"
