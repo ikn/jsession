@@ -8,6 +8,7 @@ INSTALL_DATA := install -m644
 prefix := /usr/local
 exec_prefix := $(prefix)
 bindir := $(exec_prefix)/bin
+sysconfdir := /etc
 
 .PHONY: all clean distclean install uninstall
 
@@ -19,28 +20,36 @@ clean:
 distclean: clean
 
 install:
-	mkdir -p "$(DESTDIR)$(bindir)" "$(DESTDIR)/etc/dbus-1/system.d" \
-		"$(DESTDIR)/etc/jsession/startup" \
-		"$(DESTDIR)/etc/bash_completion.d"
-	$(INSTALL_PROGRAM) jsession jsessiond jsession-quit \
-		"$(DESTDIR)$(bindir)"
+	mkdir -p "$(DESTDIR)$(bindir)"
+	$(INSTALL_PROGRAM) jsession jsessiond jsession-quit "$(DESTDIR)$(bindir)/"
+
+	mkdir -p "$(DESTDIR)$(sysconfdir)/dbus-1/system.d"
 	$(INSTALL_DATA) dbus.conf \
-		"$(DESTDIR)/etc/dbus-1/system.d/jsession.conf"
-	$(INSTALL_DATA) conf "$(DESTDIR)/etc/jsession/conf"
+		"$(DESTDIR)$(sysconfdir)/dbus-1/system.d/jsession.conf"
+
+	mkdir -p "$(DESTDIR)$(sysconfdir)/jsession/startup"
+	$(INSTALL_DATA) conf "$(DESTDIR)$(sysconfdir)/jsession/conf"
+
+	mkdir -p "$(DESTDIR)$(sysconfdir)/bash_completion.d"
 	$(INSTALL_DATA) bash_completion \
-		"$(DESTDIR)/etc/bash_completion.d/jsession_quit"
+		"$(DESTDIR)$(sysconfdir)/bash_completion.d/jsession_quit"
+
+	mkdir -p "$(DESTDIR)$(prefix)/lib/systemd/system"
+	$(INSTALL_DATA) jsession.service "$(DESTDIR)$(prefix)/lib/systemd/system/"
 
 uninstall:
-	$(RM) -r "$(DESTDIR)$(bindir)/jsession" \
+	$(RM) "$(DESTDIR)$(bindir)/jsession" \
 		"$(DESTDIR)$(bindir)/jsessiond" \
 		"$(DESTDIR)$(bindir)/jsession-quit" \
-		"$(DESTDIR)/etc/dbus-1/system.d/jsession.conf" \
-		"$(DESTDIR)/etc/bash_completion.d/jsession_quit"
+		"$(DESTDIR)$(sysconfdir)/dbus-1/system.d/jsession.conf" \
+		"$(DESTDIR)$(sysconfdir)/bash_completion.d/jsession_quit" \
+		"$(DESTDIR)$(prefix)/lib/systemd/system/jsession.service"
+
 	@ # leave startup dir if it contains things
-ifneq ("", "$(shell ls -A "$(DESTDIR)/etc/jsession/startup" 2> /dev/null)")
+ifneq ("", "$(shell ls -A "$(DESTDIR)$(sysconfdir)/jsession/startup" 2> /dev/null)")
 	@ # but warn about it
-	@ echo "warning: leaving '$(DESTDIR)/etc/jsession/startup/' in place" \
-		"because it contains files" 1>&2
+	@ echo >&2 "warning: leaving '$(DESTDIR)$(sysconfdir)/jsession/startup/'" \
+		"in place because it contains files"
 else
-	$(RM) -r "$(DESTDIR)/etc/jsession"
+	$(RM) -r "$(DESTDIR)$(sysconfdir)/jsession/startup/"
 endif

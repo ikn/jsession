@@ -6,8 +6,6 @@
 # included, you can find it here:
 #     http://www.gnu.org/licenses/gpl-3.0.txt
 
-# TODO: install systemd file on make, using correct path in ExecStart; remove it from pkgbuild and website (file + link)
-
 startup_code=4
 
 conf=$1
