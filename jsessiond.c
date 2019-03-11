@@ -4,8 +4,6 @@ jsession daemon by Joseph Lansdowne
 
 */
 
-// TODO: poweroff instead of halt
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
@@ -39,7 +37,7 @@ DBusHandlerResult handler (DBusConnection *c, DBusMessage *m, void *data) {
         return reply_err(c, m, "invalid message type");
     if (code < 1 || code > 4) return reply_err(c, m, "invalid message data");
     // take action based on received code
-    if (code == 1) code = system("halt");
+    if (code == 1) code = system("poweroff");
     else if (code == 2) code = system("reboot");
     else if (code == 3) code = system("pm-suspend");
     else code = system("run-parts /etc/jsession/startup"); // code == 4
