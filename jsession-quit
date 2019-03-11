@@ -2,10 +2,6 @@
 
 # jsession-quit by Joseph Lansdowne
 
-# Licensed under the GNU General Public License, version 3; if this was not
-# included, you can find it here:
-#     http://www.gnu.org/licenses/gpl-3.0.txt
-
 jsessiond_do () {
     reply="`dbus-send --system --type=method_call --print-reply=literal \
             --dest=prog.jsession /prog/jsession prog.jsession.cmd \

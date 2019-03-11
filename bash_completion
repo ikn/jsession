@@ -1,9 +1,5 @@
 # jsession Bash completion by Joseph Lansdowne
 
-# Licensed under the GNU General Public License, version 3; if this was not
-# included, you can find it here:
-#     http://www.gnu.org/licenses/gpl-3.0.txt
-
 _jsession_quit () {
     local cur="$2"
     local out
