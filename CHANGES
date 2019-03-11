@@ -1,6 +1,8 @@
 0.2.5-next:
  * change license from GPL3 to BSD-new
  * commands are now executed using a shell
- * fix running commands which read from standard input
  * remove the `noinit' setting (it didn't work anyway, or make much sense)
  * execute `poweroff' instead of `halt' when running `jsession-quit halt'
+ * bug: running a command which reads from standard input would skip or modify
+        subsequent commands
+ * bug: jsession-quit wouldn't work without systemd

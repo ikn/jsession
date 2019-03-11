@@ -101,13 +101,13 @@ if [ "$cmd" = logout ]; then
     fi
 else
     if [ "$cmd" = halt ]; then
-        systemctl poweroff
         code=1
+        systemctl poweroff
     elif [ "$cmd" = reboot ]; then
-        systemctl reboot
         code=2
+        systemctl reboot
     else # $cmd is suspend
-        systemctl suspend
         code=3
+        systemctl suspend
     fi || jsessiond_do $code || exit $?
 fi
