@@ -1,4 +1,7 @@
-0.3.0
+0.3.0-next:
+ * don't wait for daemon login scripts to run before running user login commands
+
+0.3.0:
  * change license from GPL3 to BSD-new
  * commands are now executed using a shell
  * remove the `noinit' setting (it didn't work anyway, or make much sense)
